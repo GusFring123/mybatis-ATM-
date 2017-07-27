@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ergou.ATM.mapper.DetailsMapper">
+    <sql id="query_details_where">
+        <if test="detailsCustom.id != null and detailsCustom.id != ''">
+            AND id = #{detailsCustom.id}
+        </if>
+
+        <if test="detailsCustom.amount != null and detailsCustom.amount != ''">
+            AND amount = #{detailsCustom.amount}
+        </if>
+
+        <if test="detailsCustom.operationType != null and detailsCustom.operationType != ''">
+            AND operation_Type = #{detailsCustom.operationType}
+        </if>
+
+        <if test="detailsCustom.remarks != null and detailsCustom.remarks != ''">
+            AND remarks = #{detailsCustom.remarks}
+        </if>
+
+        <if test="detailsCustom.createTime != null and detailsCustom.createTime != ''">
+            AND create_time = #{detailsCustom.createTime}
+        </if>
+    </sql>
+
+    <insert id="insertDetails" parameterType="details" >
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO atm_details (card_num, amount, operation_type, remarks, create_time) VALUES
+        (#{cardNum}, #{amount}, #{operationType}, #{remarks}, now())
+    </insert>
+
+    <select id="findDetails" parameterType="detailsQueryVo" resultType="details">
+        SELECT * FROM atm_details
+        <where>
+            <include refid="query_details_where"></include>
+        </where>
+    </select>
+
+    <select id="findDetailsByCardNum" parameterType="string" resultType="details">
+        SELECT * FROM atm_details WHERE card_num = #{cardNum}
+    </select>
+
+
+</mapper>
+
+
